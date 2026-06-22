@@ -1,5 +1,5 @@
 /* Minimaler Service Worker – ohne ihn ist KEINE PWA-Installation möglich. */
-const CACHE = 'pwa-cache-v1';
+const CACHE = 'pwa-cache-v2';
 const ASSETS = [
   './',
   './index.html',
