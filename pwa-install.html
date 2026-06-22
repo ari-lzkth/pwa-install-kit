@@ -73,12 +73,12 @@
 </head>
 <body>
   <header>
-    <h1>Meine PWA installieren</h1>
-    <p>App auf den Startbildschirm legen</p>
+    <h1>App installierenieren</h1>
+    <!-- <p>App auf den Startbildschirm legen</p> -->
   </header>
 
   <main>
-    <p>Lege diese App auf deinem Gerät ab und nutze sie wie eine native App.</p>
+    <p>Lege diese PWA-App auf deinem Gerät ab und nutze sie wie eine native App.</p>
 
     <!-- Android / Chrome / Edge: echter Install-Prompt -->
     <button id="installBtn">📲 App jetzt installieren</button>
@@ -86,8 +86,11 @@
     <!-- iPhone / iPad: nur manuelle Anleitung möglich -->
     <div id="iosHint">
       <p style="margin:0 0 .75rem">So installierst du die App auf dem iPhone/iPad:</p>
-      <img src="ios-install.gif" alt="Anleitung: in Safari auf Teilen tippen, dann Zum Home-Bildschirm"
+      <img id="iosGif" src="ios-install.gif" alt="Anleitung zur Installation auf dem iPhone/iPad"
            width="200" style="display:block;margin:0 auto;border-radius:14px;border:1px solid #e2e4e9" />
+      <p style="margin:.75rem 0 0;font-size:.8rem;color:#666">
+        Falls du das Teilen-Symbol direkt in der unteren Leiste siehst, kannst du es auch direkt antippen.
+      </p>
     </div>
 
     <div class="note ok"   id="okNote">✅ Die App wurde installiert! Du findest sie jetzt auf deinem Startbildschirm.</div>
@@ -138,6 +141,15 @@
     const isIos = () => /iphone|ipad|ipod/i.test(navigator.userAgent) ||
       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
+    /* iOS-Hauptversion aus dem User-Agent lesen (z. B. 26). null = unbekannt. */
+    const iosVersion = () => {
+      const m = navigator.userAgent.match(/OS (\d+)_/);       // iPhone: "OS 26_0 ..."
+      if (m) return parseInt(m[1], 10);
+      const v = navigator.userAgent.match(/Version\/(\d+)/);  // iPad-Desktop-UA
+      if (v && isIos()) return parseInt(v[1], 10);
+      return null;
+    };
+
     const isStandalone = () =>
       window.matchMedia('(display-mode: standalone)').matches ||
       window.navigator.standalone === true;
@@ -147,7 +159,7 @@
     const okNote     = document.getElementById('okNote');
     const openNote   = document.getElementById('openNote');
 
-    setDiag('d-platform', 'Plattform: ' + (isIos() ? 'iOS/Safari (kein Auto-Button möglich)' : 'Android/Desktop'), null);
+    setDiag('d-platform', 'Plattform: ' + (isIos() ? ('iOS ' + (iosVersion() || '?') + ' / Safari (kein Auto-Button möglich)') : 'Android/Desktop'), null);
     setDiag('d-display', 'Anzeige-Modus: ' + (isStandalone() ? 'standalone (bereits als App geöffnet)' : 'Browser-Tab'), null);
     setDiag('d-bip', 'beforeinstallprompt: noch nicht gefeuert (in DevTools-Emulation feuert es nie – echtes Gerät/Desktop-Chrome nutzen)', null);
 
@@ -179,6 +191,11 @@
       if (await checkAlreadyInstalled()) return;
 
       if (isIos()) {
+        // Ab iOS 26 ("Liquid Glass") steckt Teilen hinter dem •••-Menü -> anderes GIF.
+        const ver = iosVersion();
+        const useCompact = ver === null || ver >= 26;   // unbekannt -> aktuelles Layout annehmen
+        const gif = document.getElementById('iosGif');
+        if (gif) gif.src = useCompact ? 'ios26-install.gif' : 'ios-install.gif';
         iosHint.style.display = 'block';      // iOS: Anleitung
       }
       // Android-Button erscheint erst bei 'beforeinstallprompt' (siehe unten)

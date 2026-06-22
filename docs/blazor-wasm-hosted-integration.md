@@ -44,6 +44,7 @@ Alle Quelldateien findest du in diesem Repo im Ordner [`../Blazor/`](../Blazor/)
 | `Blazor/wwwroot/manifest.webmanifest` | `MeineApp.Client/wwwroot/manifest.webmanifest` |
 | `Blazor/wwwroot/icons/*` | `MeineApp.Client/wwwroot/icons/` |
 | `Blazor/wwwroot/ios-install.gif` | `MeineApp.Client/wwwroot/ios-install.gif` |
+| `Blazor/wwwroot/ios26-install.gif` | `MeineApp.Client/wwwroot/ios26-install.gif` |
 | `Blazor/wwwroot/js/pwa-install.js` | `MeineApp.Client/wwwroot/js/pwa-install.js` |
 | `Blazor/wwwroot/service-worker.js` | `MeineApp.Client/wwwroot/service-worker.js` |
 | `Blazor/wwwroot/service-worker.published.js` | `MeineApp.Client/wwwroot/service-worker.published.js` |
@@ -118,7 +119,15 @@ Und vor `</body>` (nach dem vorhandenen `blazor.webassembly.js`):
 
 Der Ablauf: `pwa-install.js` fängt das Browser-Event `beforeinstallprompt` ab und
 meldet es per `DotNetObjectReference` an `PwaInstall.razor`, die daraufhin den
-Install-Button anzeigt. Auf iOS wird stattdessen `ios-install.gif` eingeblendet.
+Install-Button anzeigt. Auf iOS wird stattdessen die passende Anleitung als GIF
+eingeblendet.
+
+> **iOS 26 beachten:** Seit iOS 26 („Liquid Glass") ist das Teilen-Symbol im
+> Standard-Layout („Kompakt") **nicht mehr direkt sichtbar** – es steckt hinter dem
+> **•••**-Knopf. Deshalb liefert `pwa-install.js` die iOS-Hauptversion mit, und
+> `PwaInstall.razor` zeigt automatisch das richtige GIF: **`ios26-install.gif`** für
+> iOS ≥ 26 (Weg über •••), **`ios-install.gif`** für ältere Versionen (Teilen-Symbol
+> direkt in der Leiste).
 
 ---
 

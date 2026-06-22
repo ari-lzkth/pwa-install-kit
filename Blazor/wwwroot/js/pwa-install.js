@@ -13,6 +13,15 @@ window.pwaInstall = (function () {
             window.navigator.standalone === true;
     }
 
+    // iOS-Hauptversion (z. B. 26), 0 = unbekannt
+    function iosVersion() {
+        var m = navigator.userAgent.match(/OS (\d+)_/);       // iPhone: "OS 26_0 ..."
+        if (m) return parseInt(m[1], 10);
+        var v = navigator.userAgent.match(/Version\/(\d+)/);  // iPad-Desktop-UA
+        if (v && isIos()) return parseInt(v[1], 10);
+        return 0;
+    }
+
     async function alreadyInstalled() {
         if ('getInstalledRelatedApps' in navigator) {
             try {
@@ -42,6 +51,7 @@ window.pwaInstall = (function () {
             return {
                 standalone: isStandalone(),
                 isIos: isIos(),
+                iosVersion: iosVersion(),
                 alreadyInstalled: await alreadyInstalled()
             };
         },

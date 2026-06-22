@@ -6,12 +6,12 @@
 <PageTitle>App installieren</PageTitle>
 
 <header>
-    <h1>Meine PWA installieren</h1>
-    <p>App auf den Startbildschirm legen</p>
+    <h1>App installieren</h1>
+    @* <p>App auf den Startbildschirm legen</p> *@
 </header>
 
 <section>
-    <p>Lege diese App auf deinem Gerät ab und nutze sie wie eine native App.</p>
+    <p>Lege diese PWA-App auf deinem Gerät ab und nutze sie wie eine native App.</p>
 
     @if (_alreadyInstalled)
     {
@@ -31,8 +31,11 @@
     {
         <div id="iosHint">
             <p style="margin:0 0 .75rem">So installierst du die App auf dem iPhone/iPad:</p>
-            <img src="ios-install.gif" alt="Anleitung: in Safari auf Teilen tippen, dann Zum Home-Bildschirm"
+            <img src="@_iosGif" alt="Anleitung zur Installation auf dem iPhone/iPad"
                  width="200" style="display:block;margin:0 auto;border-radius:14px;border:1px solid #e2e4e9" />
+            <p style="margin:.75rem 0 0;font-size:.8rem;color:#666">
+                Falls du das Teilen-Symbol direkt in der unteren Leiste siehst, kannst du es auch direkt antippen.
+            </p>
         </div>
     }
 </section>
@@ -42,6 +45,7 @@
     private bool _isIos;
     private bool _alreadyInstalled;
     private bool _justInstalled;
+    private string _iosGif = "ios-install.gif";
     private DotNetObjectReference<PwaInstall>? _selfRef;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -61,6 +65,8 @@
         // 2. Bereits installiert? (Chromium: getInstalledRelatedApps)
         _alreadyInstalled = state.AlreadyInstalled;
         _isIos = state.IsIos;
+        // Ab iOS 26 steckt "Teilen" hinter dem •••-Menü -> passendes GIF
+        _iosGif = (state.IosVersion == 0 || state.IosVersion >= 26) ? "ios26-install.gif" : "ios-install.gif";
         StateHasChanged();
     }
 
@@ -95,7 +101,7 @@
         await ValueTask.CompletedTask;
     }
 
-    public record InstallState(bool Standalone, bool IsIos, bool AlreadyInstalled);
+    public record InstallState(bool Standalone, bool IsIos, int IosVersion, bool AlreadyInstalled);
 }
 
 <style>

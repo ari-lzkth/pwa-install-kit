@@ -106,7 +106,14 @@ public static class GifMaker
         g.DrawLine(pen, cx, cy - 18, cx + 6, cy - 12);
     }
 
-    static void DrawScene(Graphics g, int W, int H, int f, int frames)
+    static void DotsIcon(Graphics g, int cx, int cy, Brush b)
+    {
+        g.FillEllipse(b, cx - 13, cy - 3, 6, 6);
+        g.FillEllipse(b, cx - 4,  cy - 3, 6, 6);
+        g.FillEllipse(b, cx + 5,  cy - 3, 6, 6);
+    }
+
+    static void DrawScene(Graphics g, int W, int H, int f, int frames, bool compact)
     {
         Color bg = Pal[0], white = Pal[1], blue = Pal[2], dark = Pal[3], border = Pal[4], gray = Pal[5], ring = Pal[6];
         g.Clear(bg);
@@ -122,47 +129,72 @@ public static class GifMaker
 
         // Body hint
         Font fBody = new Font("Segoe UI", 14, FontStyle.Regular, GraphicsUnit.Pixel);
-        g.DrawString("In Safari unten auf das Symbol tippen", fBody,
-            new SolidBrush(dark), new RectangleF(0, 150, W, 24), ctr);
+        string hint = compact ? "iOS 26: in Safari unten auf  ...  tippen"
+                              : "In Safari unten auf das Symbol tippen";
+        g.DrawString(hint, fBody, new SolidBrush(dark), new RectangleF(0, 150, W, 24), ctr);
 
-        // ---- Safari toolbar ----
-        int barY = H - 70;
-        g.FillRectangle(new SolidBrush(white), 0, barY, W, 70);
-        g.DrawLine(new Pen(border, 1), 0, barY, W, barY);
-        Pen pGray = new Pen(gray, 3); pGray.StartCap = LineCap.Round; pGray.EndCap = LineCap.Round;
-        int iy = barY + 34;
-        // back / forward
-        g.DrawLine(pGray, 46, iy - 8, 38, iy); g.DrawLine(pGray, 38, iy, 46, iy + 8);
-        g.DrawLine(pGray, 104, iy - 8, 112, iy); g.DrawLine(pGray, 112, iy, 104, iy + 8);
-        // book
-        g.DrawRectangle(pGray, 240, iy - 9, 16, 18);
-        // tabs
-        g.DrawRectangle(pGray, 300, iy - 9, 14, 14); g.DrawRectangle(pGray, 306, iy - 4, 14, 14);
-
-        // ---- Share icon (highlighted) + pulsing ring ----
-        int cx = 180, cy = iy;
         int rr = 16 + (f % 12) * 2;
-        g.DrawEllipse(new Pen(ring, 3), cx - rr, cy - rr, rr * 2, rr * 2);
-        Pen pBlue = new Pen(blue, 3); pBlue.StartCap = LineCap.Round; pBlue.EndCap = LineCap.Round; pBlue.LineJoin = LineJoin.Round;
-        ShareIcon(g, cx, cy, pBlue);
-
-        // ---- Bubble bobbing above the share icon ----
         int bob = (int)Math.Round(7.0 * Math.Sin(2 * Math.PI * f / frames));
-        int bw = 170, bh = 52;
-        int bx = cx - bw / 2;
-        int by = barY - 96 + bob;
-        RoundRect(g, new Rectangle(bx, by, bw, bh), 18, new SolidBrush(blue), null);
-        // triangle pointer down
-        GraphicsPath tri = new GraphicsPath();
-        tri.AddPolygon(new Point[] { new Point(cx - 11, by + bh - 1), new Point(cx + 11, by + bh - 1), new Point(cx, by + bh + 16) });
-        g.FillPath(new SolidBrush(blue), tri); tri.Dispose();
+        Pen pGray = new Pen(gray, 3); pGray.StartCap = LineCap.Round; pGray.EndCap = LineCap.Round;
+        Pen pBlue = new Pen(blue, 3); pBlue.StartCap = LineCap.Round; pBlue.EndCap = LineCap.Round; pBlue.LineJoin = LineJoin.Round;
         Font fB1 = new Font("Segoe UI", 15, FontStyle.Bold, GraphicsUnit.Pixel);
         Font fB2 = new Font("Segoe UI", 11, FontStyle.Regular, GraphicsUnit.Pixel);
-        g.DrawString("Hier tippen", fB1, new SolidBrush(white), new RectangleF(bx, by + 8, bw, 20), ctr);
-        g.DrawString("dann: Zum Home-Bildschirm", fB2, new SolidBrush(white), new RectangleF(bx, by + 29, bw, 16), ctr);
+
+        if (!compact)
+        {
+            // ---- Klassische Safari-Leiste (iOS < 26): Teilen-Symbol sichtbar ----
+            int barY = H - 70;
+            g.FillRectangle(new SolidBrush(white), 0, barY, W, 70);
+            g.DrawLine(new Pen(border, 1), 0, barY, W, barY);
+            int iy = barY + 34;
+            g.DrawLine(pGray, 46, iy - 8, 38, iy); g.DrawLine(pGray, 38, iy, 46, iy + 8);
+            g.DrawLine(pGray, 104, iy - 8, 112, iy); g.DrawLine(pGray, 112, iy, 104, iy + 8);
+            g.DrawRectangle(pGray, 240, iy - 9, 16, 18);
+            g.DrawRectangle(pGray, 300, iy - 9, 14, 14); g.DrawRectangle(pGray, 306, iy - 4, 14, 14);
+
+            int cx = 180, cy = iy;
+            g.DrawEllipse(new Pen(ring, 3), cx - rr, cy - rr, rr * 2, rr * 2);
+            ShareIcon(g, cx, cy, pBlue);
+
+            int bw = 170, bh = 52;
+            int bx = cx - bw / 2;
+            int by = barY - 96 + bob;
+            RoundRect(g, new Rectangle(bx, by, bw, bh), 18, new SolidBrush(blue), null);
+            GraphicsPath tri = new GraphicsPath();
+            tri.AddPolygon(new Point[] { new Point(cx - 11, by + bh - 1), new Point(cx + 11, by + bh - 1), new Point(cx, by + bh + 16) });
+            g.FillPath(new SolidBrush(blue), tri); tri.Dispose();
+            g.DrawString("Hier tippen", fB1, new SolidBrush(white), new RectangleF(bx, by + 8, bw, 20), ctr);
+            g.DrawString("dann: Zum Home-Bildschirm", fB2, new SolidBrush(white), new RectangleF(bx, by + 29, bw, 16), ctr);
+        }
+        else
+        {
+            // ---- iOS 26 "Kompakt": Teilen steckt hinter dem ...-Knopf ----
+            int pillX = 24, pillW = W - 48, pillH = 48;
+            int pillY = H - 92;
+            RoundRect(g, new Rectangle(pillX, pillY, pillW, pillH), pillH, new SolidBrush(white), new Pen(border, 1));
+            int cy = pillY + pillH / 2;
+            g.DrawLine(pGray, 58, cy - 7, 50, cy); g.DrawLine(pGray, 50, cy, 58, cy + 7);
+            Font fUrl = new Font("Segoe UI", 13, FontStyle.Regular, GraphicsUnit.Pixel);
+            StringFormat lft = new StringFormat(); lft.Alignment = StringAlignment.Near; lft.LineAlignment = StringAlignment.Center;
+            g.DrawString("ari-lzkth.github.io", fUrl, new SolidBrush(gray), new RectangleF(78, pillY, pillW - 130, pillH), lft);
+
+            int cx = W - 58;
+            g.DrawEllipse(new Pen(ring, 3), cx - rr, cy - rr, rr * 2, rr * 2);
+            DotsIcon(g, cx, cy, new SolidBrush(blue));
+
+            int bw = 224, bh = 56;
+            int bx = W - bw - 12;
+            int by = pillY - bh - 16 + bob;
+            RoundRect(g, new Rectangle(bx, by, bw, bh), 18, new SolidBrush(blue), null);
+            GraphicsPath tri = new GraphicsPath();
+            tri.AddPolygon(new Point[] { new Point(cx - 11, by + bh - 1), new Point(cx + 11, by + bh - 1), new Point(cx, by + bh + 16) });
+            g.FillPath(new SolidBrush(blue), tri); tri.Dispose();
+            g.DrawString("Tippe auf  ...", fB1, new SolidBrush(white), new RectangleF(bx, by + 9, bw, 20), ctr);
+            g.DrawString("dann: Teilen -> Zum Home-Bildschirm", fB2, new SolidBrush(white), new RectangleF(bx, by + 31, bw, 16), ctr);
+        }
     }
 
-    public static void Make(string path, int W, int H, int frames, int delayCs)
+    public static void Make(string path, int W, int H, int frames, int delayCs, bool compact)
     {
         Pal = new Color[] {
             Color.FromArgb(0xf5,0xf6,0xf8), // 0 bg
@@ -198,7 +230,7 @@ public static class GifMaker
             Graphics g = Graphics.FromImage(bmp);
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-            DrawScene(g, W, H, f, frames);
+            DrawScene(g, W, H, f, frames, compact);
             g.Dispose();
             System.Drawing.Imaging.BitmapData bd = bmp.LockBits(new Rectangle(0, 0, W, H),
                 System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -236,6 +268,10 @@ public static class GifMaker
 }
 '@
 
-$out = "C:\Users\Andreas.Richter\Documents\Claude\Projects\PWA\ios-install.gif"
-[GifMaker]::Make($out, 360, 640, 24, 8)
-Write-Host ("erstellt: {0}  ({1:N0} bytes)" -f $out, (Get-Item $out).Length)
+$dir = "C:\Users\Andreas.Richter\Documents\Claude\Projects\PWA\pwa-install-kit"
+$classic = Join-Path $dir "ios-install.gif"
+$ios26   = Join-Path $dir "ios26-install.gif"
+[GifMaker]::Make($classic, 360, 640, 24, 8, $false)
+[GifMaker]::Make($ios26,   360, 640, 24, 8, $true)
+Write-Host ("erstellt: {0}  ({1:N0} bytes)" -f $classic, (Get-Item $classic).Length)
+Write-Host ("erstellt: {0}  ({1:N0} bytes)" -f $ios26,   (Get-Item $ios26).Length)

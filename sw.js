@@ -5,6 +5,7 @@ const ASSETS = [
   './index.html',
   './pwa-install.html',
   './ios-install.gif',
+  './ios26-install.gif',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png'
