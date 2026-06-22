@@ -205,7 +205,8 @@
         const ver = iosVersion();
         const useCompact = ver === null || ver >= 26;   // unbekannt -> aktuelles Layout annehmen
         const gif = document.getElementById('iosGif');
-        if (gif) gif.src = useCompact ? 'ios26-install.gif' : 'ios-install.gif';
+        // ?v=… umgeht hartnäckiges Bild-Caching; bei neuem GIF einfach hochzählen
+        if (gif) gif.src = (useCompact ? 'ios26-install.gif' : 'ios-install.gif') + '?v=4';
         iosHint.style.display = 'block';      // iOS: Anleitung
       }
       // Android-Button erscheint erst bei 'beforeinstallprompt' (siehe unten)

@@ -1,5 +1,10 @@
-/* Minimaler Service Worker – ohne ihn ist KEINE PWA-Installation möglich. */
-const CACHE = 'pwa-cache-v3';
+/* Service Worker – NETWORK-FIRST.
+ *
+ * Frueher war die Strategie "cache-first": alte Inhalte (z. B. ein altes GIF)
+ * blieben auf Geraeten haengen, weil immer zuerst der Cache geliefert wurde.
+ * Jetzt wird IMMER zuerst das Netz versucht; der Cache dient nur als
+ * Offline-Fallback. So kommen Updates zuverlaessig an. */
+const CACHE = 'pwa-cache-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -11,30 +16,34 @@ const ASSETS = [
   './icons/icon-512.png'
 ];
 
-// Installieren: Grunddateien in den Cache legen
+// Installieren: Grunddateien fuer den Offline-Fall vorladen
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(ASSETS))
-  );
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
   self.skipWaiting();
 });
 
-// Alte Caches aufräumen
+// Aktivieren: ALLE alten Caches loeschen (ausser dem aktuellen), Clients uebernehmen
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-    )
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Cache-first: macht die App offlinefähig (Voraussetzung für „Installierbar")
+// Network-first: erst Netz, dann (nur offline) Cache
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.match(event.request).then((cached) =>
-      cached || fetch(event.request).catch(() => caches.match('./index.html'))
-    )
+    fetch(event.request)
+      .then((resp) => {
+        const copy = resp.clone();
+        caches.open(CACHE).then((cache) => cache.put(event.request, copy)).catch(() => {});
+        return resp;
+      })
+      .catch(() =>
+        caches.match(event.request, { ignoreSearch: true })
+          .then((cached) => cached || caches.match('./index.html'))
+      )
   );
 });
