@@ -133,7 +133,7 @@ anzeigt, ob Service Worker, Manifest und `beforeinstallprompt` korrekt sind.
 > oder ein **echtes Android-Gerät** verwenden.
 
 ---
-
+<!-- 
 ## Auf GitHub Pages veröffentlichen
 
 1. Repository auf GitHub anlegen und pushen.
@@ -150,7 +150,7 @@ anzeigt, ob Service Worker, Manifest und `beforeinstallprompt` korrekt sind.
 > absolute Pfade (`/index.html`) verwenden, wäre die PWA dort kaputt.
 
 Die mitgelieferte Datei `.nojekyll` verhindert, dass GitHubs Jekyll-Build die
-Dateien anfasst.
+Dateien anfasst. -->
 
 ### QR-Code
 
@@ -184,7 +184,7 @@ node tools/make-qr.js "https://meine-domain/pwa-install.html" qr.png
   echte Logo (gleiche Dateinamen/Größen) tauschen.
 - **Diagnose-Feld** in `pwa-install.html` (Block `<details id="diag">`) für den
   Echtbetrieb entfernen.
-- **Texte/Farben** anpassen (Theme-Farbe `#0d6efd`, App-Name „Meine PWA").
+- **Texte/Farben** anpassen (Theme-Farbe `#0d6efd`, App-Name „Meine APP").
 
 ---
 

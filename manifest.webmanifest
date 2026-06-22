@@ -1,5 +1,5 @@
 {
-  "name": "Meine PWA",
+  "name": "Meine APP",
   "short_name": "PWA",
   "description": "Installierbare Web-App für Handy und Tablet",
   "start_url": "./index.html",
