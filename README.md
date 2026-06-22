@@ -6,6 +6,13 @@
   <a href="https://ari-lzkth.github.io/pwa-install-kit/pwa-install.html" target="_blank" rel="noopener noreferrer">https://ari-lzkth.github.io/pwa-install-kit/pwa-install.html</a></sub>
 </p>
 
+<p align="center">
+  <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg" />
+  <img alt="PWA installable" src="https://img.shields.io/badge/PWA-installable-5a0fc8" />
+  <img alt="Blazor .NET 8" src="https://img.shields.io/badge/Blazor-.NET%208-512BD4" />
+  <a href="https://ari-lzkth.github.io/pwa-install-kit/pwa-install.html"><img alt="Live Demo" src="https://img.shields.io/badge/Demo-live-success" /></a>
+</p>
+
 Eine installierbare **Progressive Web App (PWA)**, die per **QR-Code** verteilt wird:
 Der QR-Code führt auf eine Installations-Seite, von der aus sich die App mit
 **einem Tap** (Android) bzw. einer geführten Anleitung (iOS) auf den
@@ -16,6 +23,26 @@ in der eigentlichen App-Seite.
 > eine **statische Variante** (reines HTML/JS, im Repo-Root) und eine
 > **Razor/Blazor-Variante** (.NET 8, im Ordner [`Blazor/`](Blazor/)).
 > **GitHub Pages** wird bewusst nur für die statische Variante genutzt.
+
+---
+
+## Features
+
+- 📱 **QR-Code-Verteilung** – ein Code, alle Geräte, kein App-Store
+- 🤖 **Android:** Ein-Klick-Installation über den nativen Prompt (`beforeinstallprompt`)
+- 🍏 **iOS/iPadOS:** geführte Anleitung als animiertes GIF – **inkl. iOS 26**
+  („Liquid Glass", Weg über das •••-Menü) dank robuster Versionserkennung
+  **trotz eingefrorenem User-Agent**
+- 🔁 **Auto-Weiterleitung:** das installierte App-Icon startet direkt die eigentliche App (`start_url`)
+- 🌐 **Offlinefähig** über einen Service Worker (network-first)
+- 🧩 **Zwei Varianten:** statisches HTML/JS **und** Blazor WebAssembly
+- 🛠️ **Ohne externe Tools gebaut:** eigener animierter GIF-Encoder + QR-Generator
+
+### Die iOS-Anleitung passt sich automatisch der iOS-Version an
+
+| iOS &lt; 26 – Teilen-Symbol direkt sichtbar | iOS ≥ 26 – Weg über das •••-Menü |
+|:---:|:---:|
+| <img src="ios-install.gif" width="220" alt="Anleitung iOS unter 26" /> | <img src="ios26-install.gif" width="220" alt="Anleitung iOS 26" /> |
 
 ---
 
