@@ -119,26 +119,26 @@ public static class GifMaker
         g.Clear(bg);
 
         // Header
-        g.FillRectangle(new SolidBrush(blue), 0, 0, W, 118);
+        g.FillRectangle(new SolidBrush(blue), 0, 0, W, 140);
         StringFormat ctr = new StringFormat();
         ctr.Alignment = StringAlignment.Center; ctr.LineAlignment = StringAlignment.Center;
-        Font fTitle = new Font("Segoe UI", 24, FontStyle.Bold, GraphicsUnit.Pixel);
-        Font fSub = new Font("Segoe UI", 13, FontStyle.Regular, GraphicsUnit.Pixel);
-        g.DrawString("Meine App", fTitle, new SolidBrush(white), new RectangleF(0, 30, W, 36), ctr);
-        g.DrawString("auf den Startbildschirm legen", fSub, new SolidBrush(white), new RectangleF(0, 74, W, 22), ctr);
+        Font fTitle = new Font("Segoe UI", 36, FontStyle.Bold, GraphicsUnit.Pixel);
+        Font fSub = new Font("Segoe UI", 19, FontStyle.Regular, GraphicsUnit.Pixel);
+        g.DrawString("Meine App", fTitle, new SolidBrush(white), new RectangleF(0, 28, W, 52), ctr);
+        g.DrawString("auf den Startbildschirm legen", fSub, new SolidBrush(white), new RectangleF(0, 92, W, 30), ctr);
 
         // Body hint
-        Font fBody = new Font("Segoe UI", 14, FontStyle.Regular, GraphicsUnit.Pixel);
+        Font fBody = new Font("Segoe UI", 20, FontStyle.Regular, GraphicsUnit.Pixel);
         string hint = compact ? "iOS 26: in Safari unten auf  ...  tippen"
                               : "In Safari unten auf das Symbol tippen";
-        g.DrawString(hint, fBody, new SolidBrush(dark), new RectangleF(0, 150, W, 24), ctr);
+        g.DrawString(hint, fBody, new SolidBrush(dark), new RectangleF(20, 172, W - 40, 64), ctr);
 
         int rr = 16 + (f % 12) * 2;
         int bob = (int)Math.Round(7.0 * Math.Sin(2 * Math.PI * f / frames));
         Pen pGray = new Pen(gray, 3); pGray.StartCap = LineCap.Round; pGray.EndCap = LineCap.Round;
         Pen pBlue = new Pen(blue, 3); pBlue.StartCap = LineCap.Round; pBlue.EndCap = LineCap.Round; pBlue.LineJoin = LineJoin.Round;
-        Font fB1 = new Font("Segoe UI", 15, FontStyle.Bold, GraphicsUnit.Pixel);
-        Font fB2 = new Font("Segoe UI", 11, FontStyle.Regular, GraphicsUnit.Pixel);
+        Font fB1 = new Font("Segoe UI", 22, FontStyle.Bold, GraphicsUnit.Pixel);
+        Font fB2 = new Font("Segoe UI", 16, FontStyle.Regular, GraphicsUnit.Pixel);
 
         if (!compact)
         {
@@ -156,15 +156,15 @@ public static class GifMaker
             g.DrawEllipse(new Pen(ring, 3), cx - rr, cy - rr, rr * 2, rr * 2);
             ShareIcon(g, cx, cy, pBlue);
 
-            int bw = 170, bh = 52;
+            int bw = 244, bh = 72;
             int bx = cx - bw / 2;
-            int by = barY - 96 + bob;
-            RoundRect(g, new Rectangle(bx, by, bw, bh), 18, new SolidBrush(blue), null);
+            int by = barY - bh - 14 + bob;
+            RoundRect(g, new Rectangle(bx, by, bw, bh), 20, new SolidBrush(blue), null);
             GraphicsPath tri = new GraphicsPath();
-            tri.AddPolygon(new Point[] { new Point(cx - 11, by + bh - 1), new Point(cx + 11, by + bh - 1), new Point(cx, by + bh + 16) });
+            tri.AddPolygon(new Point[] { new Point(cx - 13, by + bh - 1), new Point(cx + 13, by + bh - 1), new Point(cx, by + bh + 18) });
             g.FillPath(new SolidBrush(blue), tri); tri.Dispose();
-            g.DrawString("Hier tippen", fB1, new SolidBrush(white), new RectangleF(bx, by + 8, bw, 20), ctr);
-            g.DrawString("dann: Zum Home-Bildschirm", fB2, new SolidBrush(white), new RectangleF(bx, by + 29, bw, 16), ctr);
+            g.DrawString("Hier tippen", fB1, new SolidBrush(white), new RectangleF(bx, by + 12, bw, 30), ctr);
+            g.DrawString("dann: Zum Home-Bildschirm", fB2, new SolidBrush(white), new RectangleF(bx, by + 43, bw, 24), ctr);
         }
         else
         {
@@ -174,23 +174,23 @@ public static class GifMaker
             RoundRect(g, new Rectangle(pillX, pillY, pillW, pillH), pillH, new SolidBrush(white), new Pen(border, 1));
             int cy = pillY + pillH / 2;
             g.DrawLine(pGray, 58, cy - 7, 50, cy); g.DrawLine(pGray, 50, cy, 58, cy + 7);
-            Font fUrl = new Font("Segoe UI", 13, FontStyle.Regular, GraphicsUnit.Pixel);
+            Font fUrl = new Font("Segoe UI", 18, FontStyle.Regular, GraphicsUnit.Pixel);
             StringFormat lft = new StringFormat(); lft.Alignment = StringAlignment.Near; lft.LineAlignment = StringAlignment.Center;
-            g.DrawString("ari-lzkth.github.io", fUrl, new SolidBrush(gray), new RectangleF(78, pillY, pillW - 130, pillH), lft);
+            g.DrawString("ari-lzkth.github.io", fUrl, new SolidBrush(gray), new RectangleF(82, pillY, pillW - 140, pillH), lft);
 
             int cx = W - 58;
             g.DrawEllipse(new Pen(ring, 3), cx - rr, cy - rr, rr * 2, rr * 2);
             DotsIcon(g, cx, cy, new SolidBrush(blue));
 
-            int bw = 224, bh = 56;
-            int bx = W - bw - 12;
-            int by = pillY - bh - 16 + bob;
-            RoundRect(g, new Rectangle(bx, by, bw, bh), 18, new SolidBrush(blue), null);
+            int bw = 268, bh = 74;
+            int bx = W - bw - 8;
+            int by = pillY - bh - 14 + bob;
+            RoundRect(g, new Rectangle(bx, by, bw, bh), 20, new SolidBrush(blue), null);
             GraphicsPath tri = new GraphicsPath();
-            tri.AddPolygon(new Point[] { new Point(cx - 11, by + bh - 1), new Point(cx + 11, by + bh - 1), new Point(cx, by + bh + 16) });
+            tri.AddPolygon(new Point[] { new Point(cx - 13, by + bh - 1), new Point(cx + 13, by + bh - 1), new Point(cx, by + bh + 18) });
             g.FillPath(new SolidBrush(blue), tri); tri.Dispose();
-            g.DrawString("Tippe auf  ...", fB1, new SolidBrush(white), new RectangleF(bx, by + 9, bw, 20), ctr);
-            g.DrawString("dann: Teilen -> Zum Home-Bildschirm", fB2, new SolidBrush(white), new RectangleF(bx, by + 31, bw, 16), ctr);
+            g.DrawString("Tippe auf  ...", fB1, new SolidBrush(white), new RectangleF(bx, by + 12, bw, 30), ctr);
+            g.DrawString("Teilen -> Zum Home-Bildschirm", fB2, new SolidBrush(white), new RectangleF(bx, by + 43, bw, 24), ctr);
         }
     }
 
