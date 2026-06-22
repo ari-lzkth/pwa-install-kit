@@ -1,5 +1,11 @@
 # pwa-install-kit
 
+<p align="center">
+  <img src="qr-pwa-install.png" alt="QR-Code zur Installations-Seite" width="240" /><br />
+  <sub>📱 Scannen → App installieren<br />
+  <code>https://ari-lzkth.github.io/pwa-install-kit/pwa-install.html</code></sub>
+</p>
+
 Eine installierbare **Progressive Web App (PWA)**, die per **QR-Code** verteilt wird:
 Der QR-Code führt auf eine Installations-Seite, von der aus sich die App mit
 **einem Tap** (Android) bzw. einer geführten Anleitung (iOS) auf den
@@ -172,4 +178,16 @@ node tools/make-qr.js "https://meine-domain/pwa-install.html" qr.png
 
 ---
 
-## Vor dem Produktiveinsatz noch zu e
+## Vor dem Produktiveinsatz noch zu erledigen
+
+- **Icons ersetzen:** Die `icons/*.png` sind blaue Platzhalter mit „P". Gegen das
+  echte Logo (gleiche Dateinamen/Größen) tauschen.
+- **Diagnose-Feld** in `pwa-install.html` (Block `<details id="diag">`) für den
+  Echtbetrieb entfernen.
+- **Texte/Farben** anpassen (Theme-Farbe `#0d6efd`, App-Name „Meine PWA").
+
+---
+
+## Lizenz
+
+[MIT](LICENSE) – frei verwendbar, auch kommerziell. Siehe `LICENSE`.
