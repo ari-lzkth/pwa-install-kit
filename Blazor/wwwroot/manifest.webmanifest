@@ -1,6 +1,6 @@
 {
   "name": "Meine APP",
-  "short_name": "PWA",
+  "short_name": "Meine APP",
   "description": "Installierbare Blazor Web-App für Handy und Tablet",
   "start_url": "./",
   "scope": "./",

@@ -38,11 +38,16 @@ in der eigentlichen App-Seite.
 - 🧩 **Zwei Varianten:** statisches HTML/JS **und** Blazor WebAssembly
 - 🛠️ **Ohne externe Tools gebaut:** eigener animierter GIF-Encoder + QR-Generator
 
-### Die iOS-Anleitung passt sich automatisch der iOS-Version an
+### So sieht es auf den Geräten aus
 
-| iOS &lt; 26 – Teilen-Symbol direkt sichtbar | iOS ≥ 26 – Weg über das •••-Menü |
-|:---:|:---:|
-| <img src="ios-install.gif" width="220" alt="Anleitung iOS unter 26" /> | <img src="ios26-install.gif" width="220" alt="Anleitung iOS 26" /> |
+| Android | iOS &lt; 26 | iOS ≥ 26 |
+|:---:|:---:|:---:|
+| <img src="screenshots/android.png" width="230" alt="Android: Ein-Klick-Installation" /> | <img src="screenshots/ios-unter-26.png" width="230" alt="iOS unter 26" /> | <img src="screenshots/ios-ab-26.png" width="230" alt="iOS 26" /> |
+| **Ein Tap** auf „App jetzt installieren" | Anleitung über das **Teilen-Symbol** | Anleitung über das **•••-Menü** |
+
+> Auf **Android** ist die App direkt installierbar (ein Tap auf den Button löst den
+> nativen Dialog aus). Auf **iOS** zeigt die Seite automatisch die zur iOS-Version
+> passende, animierte Anleitung.
 
 ---
 
