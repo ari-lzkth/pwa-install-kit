@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>App installieren</title>
+
+  <!-- Gleiches Manifest wie die App. start_url zeigt auf index.html -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0d6efd" />
+
+  <!-- iOS / Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Meine PWA" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #f5f6f8;
+      color: #1a1a1a;
+      min-height: 100dvh;
+    }
+    header {
+      background: #0d6efd;
+      color: #fff;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      padding-top: max(1.25rem, env(safe-area-inset-top));
+    }
+    main { padding: 1.5rem 1rem; max-width: 640px; margin: 0 auto; }
+
+    #installBtn {
+      display: none;
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+      background: #0d6efd;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(13,110,253,.35);
+    }
+    #installBtn:active { transform: scale(.98); }
+
+    #iosHint {
+      display: none;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid #e2e4e9;
+      border-radius: 12px;
+      line-height: 1.6;
+    }
+    #iosHint b { color: #0d6efd; }
+    .share-ico { display: inline-block; vertical-align: -3px; }
+
+    .note {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      line-height: 1.6;
+    }
+    .note.ok   { display:none; background:#e6f7ec; border:1px solid #b7e4c7; color:#14532d; }
+    .note.open { display:none; background:#eef4ff; border:1px solid #cdd9f7; color:#1e3a8a; }
+    .note.open a { color:#0d6efd; font-weight:600; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Meine PWA installieren</h1>
+    <p>App auf den Startbildschirm legen</p>
+  </header>
+
+  <main>
+    <p>Lege diese App auf deinem Gerät ab und nutze sie wie eine native App.</p>
+
+    <!-- Android / Chrome / Edge: echter Install-Prompt -->
+    <button id="installBtn">📲 App jetzt installieren</button>
+
+    <!-- iPhone / iPad: nur manuelle Anleitung möglich -->
+    <div id="iosHint">
+      <p style="margin:0 0 .75rem">So installierst du die App auf dem iPhone/iPad:</p>
+      <img src="ios-install.gif" alt="Anleitung: in Safari auf Teilen tippen, dann Zum Home-Bildschirm"
+           width="200" style="display:block;margin:0 auto;border-radius:14px;border:1px solid #e2e4e9" />
+    </div>
+
+    <div class="note ok"   id="okNote">✅ Die App wurde installiert! Du findest sie jetzt auf deinem Startbildschirm.</div>
+    <div class="note open" id="openNote">Die App ist bereits installiert. <a href="index.html">▶ App öffnen</a></div>
+
+    <!-- DIAGNOSE (zum Testen; im Echtbetrieb einfach entfernen) -->
+    <details id="diag" style="margin-top:1.5rem;font-size:.85rem;color:#444">
+      <summary style="cursor:pointer;font-weight:600">🔍 Diagnose (warum erscheint der Button?)</summary>
+      <ul id="diagList" style="list-style:none;padding:0;line-height:1.8">
+        <li id="d-proto">Protokoll: …</li>
+        <li id="d-sw">Service Worker: …</li>
+        <li id="d-manifest">Manifest: …</li>
+        <li id="d-platform">Plattform: …</li>
+        <li id="d-display">Anzeige-Modus: …</li>
+        <li id="d-bip">beforeinstallprompt: …</li>
+      </ul>
+    </details>
+  </main>
+
+  <script>
+    /* ---------- Diagnose-Helfer ---------- */
+    const setDiag = (id, txt, ok) => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = txt; el.style.color = ok === true ? '#14753a' : ok === false ? '#b00020' : '#444'; }
+    };
+
+    /* Protokoll prüfen (PWA braucht https oder localhost) */
+    const secureOk = window.isSecureContext;
+    setDiag('d-proto', 'Protokoll: ' + location.protocol +
+      (secureOk ? ' ✓ (sicherer Kontext)' : ' ✗ – braucht https:// oder localhost!'), secureOk);
+
+    /* ---------- Service Worker registrieren ---------- */
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => setDiag('d-sw', 'Service Worker: registriert ✓', true))
+        .catch(err => setDiag('d-sw', 'Service Worker: Fehler – ' + err.message, false));
+    } else {
+      setDiag('d-sw', 'Service Worker: vom Browser nicht unterstützt ✗', false);
+    }
+
+    /* Manifest prüfen */
+    fetch('manifest.webmanifest')
+      .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+      .then(m => setDiag('d-manifest', 'Manifest: geladen ✓ (' + (m.icons ? m.icons.length : 0) + ' Icons)', true))
+      .catch(err => setDiag('d-manifest', 'Manifest: Fehler – ' + err.message, false));
+
+    /* ---------- Erkennung ---------- */
+    const isIos = () => /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+    const isStandalone = () =>
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+
+    const installBtn = document.getElementById('installBtn');
+    const iosHint    = document.getElementById('iosHint');
+    const okNote     = document.getElementById('okNote');
+    const openNote   = document.getElementById('openNote');
+
+    setDiag('d-platform', 'Plattform: ' + (isIos() ? 'iOS/Safari (kein Auto-Button möglich)' : 'Android/Desktop'), null);
+    setDiag('d-display', 'Anzeige-Modus: ' + (isStandalone() ? 'standalone (bereits als App geöffnet)' : 'Browser-Tab'), null);
+    setDiag('d-bip', 'beforeinstallprompt: noch nicht gefeuert (in DevTools-Emulation feuert es nie – echtes Gerät/Desktop-Chrome nutzen)', null);
+
+    /* ---------- 1. Läuft die Install-Seite bereits im App-Modus?
+                     -> sofort zur echten App weiterleiten ---------- */
+    if (isStandalone()) {
+      location.replace('index.html');
+    }
+
+    /* ---------- 2. Bereits installiert? (nur Chromium per getInstalledRelatedApps) ---------- */
+    async function checkAlreadyInstalled() {
+      if ('getInstalledRelatedApps' in navigator) {
+        try {
+          const related = await navigator.getInstalledRelatedApps();
+          if (related && related.length > 0) {
+            installBtn.style.display = 'none';
+            iosHint.style.display = 'none';
+            openNote.style.display = 'block';
+            return true;
+          }
+        } catch (_) { /* ignorieren */ }
+      }
+      return false;
+    }
+
+    /* ---------- 3. Install-UI je nach Plattform ---------- */
+    (async () => {
+      if (isStandalone()) return;             // wird ohnehin weitergeleitet
+      if (await checkAlreadyInstalled()) return;
+
+      if (isIos()) {
+        iosHint.style.display = 'block';      // iOS: Anleitung
+      }
+      // Android-Button erscheint erst bei 'beforeinstallprompt' (siehe unten)
+    })();
+
+    /* ---------- 4. Android/Chrome/Edge: echtes Install-Popup ---------- */
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'block';
+      setDiag('d-bip', 'beforeinstallprompt: gefeuert ✓ – Button ist sichtbar', true);
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+      if (outcome === 'accepted') okNote.style.display = 'block';
+    });
+
+    /* ---------- 5. Erfolgreich installiert ---------- */
+    window.addEventListener('appinstalled', () => {
+      installBtn.style.display = 'none';
+      iosHint.style.display = 'none';
+      okNote.style.display = 'block';
+    });
+  </script>
+</body>
+</html>

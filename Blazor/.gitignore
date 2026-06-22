@@ -1,0 +1,12 @@
+# .NET Build-Ausgaben
+bin/
+obj/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,9 @@
+# OS-/Editor-Dateien
+.DS_Store
+Thumbs.db
+*.log
+
+# Node (nur tools/server.js wird genutzt – keine node_modules nötig)
+node_modules/
+
+# Hinweis: Der Blazor-Ordner hat eine eigene .gitignore für bin/ und obj/.

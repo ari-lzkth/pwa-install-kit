@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Meine PWA</title>
+
+  <!-- PWA: Manifest + Theme -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0d6efd" />
+
+  <!-- iOS / Safari spezifisch -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Meine PWA" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #f5f6f8;
+      color: #1a1a1a;
+      min-height: 100dvh;
+    }
+    header {
+      background: #0d6efd;
+      color: #fff;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      padding-top: max(1.25rem, env(safe-area-inset-top));
+    }
+    main { padding: 1.5rem 1rem; max-width: 640px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Meine PWA</h1>
+    <p>Willkommen in der App</p>
+  </header>
+
+  <main>
+    <p>Dies ist die eigentliche Anwendung. Sie wird angezeigt, sobald die App
+       installiert ist und über das Startbildschirm-Icon geöffnet wird.</p>
+    <!-- Hier kommt dein App-Inhalt hin -->
+  </main>
+
+  <script>
+    /* Service Worker registrieren (für Offline-Betrieb der installierten App) */
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(console.error);
+      });
+    }
+  </script>
+</body>
+</html>

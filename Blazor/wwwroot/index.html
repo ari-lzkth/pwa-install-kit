@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Meine PWA</title>
+    <base href="/" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#0d6efd" />
+
+    <!-- iOS / Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Meine PWA" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+    <style>
+        body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:#f5f6f8; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div style="padding:2rem;text-align:center;color:#0d6efd;">Lädt…</div>
+    </div>
+
+    <div id="blazor-error-ui" style="display:none;">
+        Ein Fehler ist aufgetreten.
+        <a href="" class="reload">Neu laden</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/pwa-install.js"></script>
+
+    <!-- Service Worker registrieren -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
+</body>
+</html>

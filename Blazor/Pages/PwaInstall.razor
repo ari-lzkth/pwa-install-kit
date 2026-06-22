@@ -1,0 +1,112 @@
+@page "/pwa-install"
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+@implements IAsyncDisposable
+
+<PageTitle>App installieren</PageTitle>
+
+<header>
+    <h1>Meine PWA installieren</h1>
+    <p>App auf den Startbildschirm legen</p>
+</header>
+
+<section>
+    <p>Lege diese App auf deinem Gerät ab und nutze sie wie eine native App.</p>
+
+    @if (_alreadyInstalled)
+    {
+        <div class="note open">
+            Die App ist bereits installiert. <a href="/">▶ App öffnen</a>
+        </div>
+    }
+    else if (_justInstalled)
+    {
+        <div class="note ok">✅ Die App wurde installiert! Du findest sie jetzt auf deinem Startbildschirm.</div>
+    }
+    else if (_canInstall)
+    {
+        <button id="installBtn" @onclick="InstallAsync">📲 App jetzt installieren</button>
+    }
+    else if (_isIos)
+    {
+        <div id="iosHint">
+            <p style="margin:0 0 .75rem">So installierst du die App auf dem iPhone/iPad:</p>
+            <img src="ios-install.gif" alt="Anleitung: in Safari auf Teilen tippen, dann Zum Home-Bildschirm"
+                 width="200" style="display:block;margin:0 auto;border-radius:14px;border:1px solid #e2e4e9" />
+        </div>
+    }
+</section>
+
+@code {
+    private bool _canInstall;
+    private bool _isIos;
+    private bool _alreadyInstalled;
+    private bool _justInstalled;
+    private DotNetObjectReference<PwaInstall>? _selfRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        _selfRef = DotNetObjectReference.Create(this);
+        var state = await JS.InvokeAsync<InstallState>("pwaInstall.init", _selfRef);
+
+        // 1. Läuft die Install-Seite schon im App-Modus? -> direkt in die App
+        if (state.Standalone)
+        {
+            Nav.NavigateTo("/", forceLoad: false);
+            return;
+        }
+
+        // 2. Bereits installiert? (Chromium: getInstalledRelatedApps)
+        _alreadyInstalled = state.AlreadyInstalled;
+        _isIos = state.IsIos;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnInstallAvailable()
+    {
+        _canInstall = true;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void OnInstalled()
+    {
+        _justInstalled = true;
+        _canInstall = false;
+        StateHasChanged();
+    }
+
+    private async Task InstallAsync()
+    {
+        var accepted = await JS.InvokeAsync<bool>("pwaInstall.prompt");
+        if (accepted)
+        {
+            _justInstalled = true;
+            _canInstall = false;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _selfRef?.Dispose();
+        await ValueTask.CompletedTask;
+    }
+
+    public record InstallState(bool Standalone, bool IsIos, bool AlreadyInstalled);
+}
+
+<style>
+    header { background:#0d6efd; color:#fff; padding:1.25rem 1rem; text-align:center; }
+    section { padding:1.5rem 1rem; max-width:640px; margin:0 auto; }
+    #installBtn { width:100%; padding:1rem; font-size:1.1rem; font-weight:600; color:#fff;
+        background:#0d6efd; border:none; border-radius:12px; cursor:pointer;
+        box-shadow:0 4px 14px rgba(13,110,253,.35); }
+    #iosHint, .note { margin-top:1rem; padding:1rem; border-radius:12px; line-height:1.6; }
+    #iosHint { background:#fff; border:1px solid #e2e4e9; }
+    .note.ok { background:#e6f7ec; border:1px solid #b7e4c7; color:#14532d; }
+    .note.open { background:#eef4ff; border:1px solid #cdd9f7; color:#1e3a8a; }
+    .note.open a { color:#0d6efd; font-weight:600; }
+</style>
