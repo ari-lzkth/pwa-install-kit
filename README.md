@@ -40,14 +40,14 @@ in der eigentlichen App-Seite.
 
 ### So sieht es auf den Geräten aus
 
-| Android | iOS &lt; 26 | iOS ≥ 26 |
-|:---:|:---:|:---:|
-| <img src="screenshots/android.png" width="230" alt="Android: Ein-Klick-Installation" /> | <img src="screenshots/ios-unter-26.png" width="230" alt="iOS unter 26" /> | <img src="screenshots/ios-ab-26.png" width="230" alt="iOS 26" /> |
-| **Ein Tap** auf „App jetzt installieren" | Anleitung über das **Teilen-Symbol** | Anleitung über das **•••-Menü** |
+<p align="center">
+  <img src="screenshots/uebersicht.png" width="900" alt="Install-Seite auf Android, iOS kleiner 26 und iOS ab 26" />
+</p>
 
 > Auf **Android** ist die App direkt installierbar (ein Tap auf den Button löst den
 > nativen Dialog aus). Auf **iOS** zeigt die Seite automatisch die zur iOS-Version
-> passende, animierte Anleitung.
+> passende, animierte Anleitung – mit **Teilen-Symbol** (iOS &lt; 26) bzw. über das
+> **•••-Menü** (iOS ≥ 26).
 
 ---
 
