@@ -151,13 +151,18 @@
     const isIos = () => /iphone|ipad|ipod/i.test(navigator.userAgent) ||
       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-    /* iOS-Hauptversion aus dem User-Agent lesen (z. B. 26). null = unbekannt. */
+    /* iOS-Hauptversion bestimmen. WICHTIG: Seit iOS 26 friert Safari die
+       "OS x_y"-Angabe dauerhaft auf 18_6 ein (Datenschutz). Die echte Version
+       steht dann nur noch in "Version/26.0". Daher das MAXIMUM aus beiden
+       Signalen nehmen – der Safari-Major entspricht ab iOS 26 dem iOS-Major. */
     const iosVersion = () => {
-      const m = navigator.userAgent.match(/OS (\d+)_/);       // iPhone: "OS 26_0 ..."
-      if (m) return parseInt(m[1], 10);
-      const v = navigator.userAgent.match(/Version\/(\d+)/);  // iPad-Desktop-UA
-      if (v && isIos()) return parseInt(v[1], 10);
-      return null;
+      const ua = navigator.userAgent;
+      let v = 0;
+      const os = ua.match(/OS (\d+)_/);          // bei iOS 26 eingefroren (18_6)!
+      if (os) v = Math.max(v, parseInt(os[1], 10));
+      const sa = ua.match(/Version\/(\d+)/);     // Safari-Major = echte iOS-Major
+      if (sa) v = Math.max(v, parseInt(sa[1], 10));
+      return v || null;
     };
 
     const isStandalone = () =>

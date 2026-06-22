@@ -13,13 +13,18 @@ window.pwaInstall = (function () {
             window.navigator.standalone === true;
     }
 
-    // iOS-Hauptversion (z. B. 26), 0 = unbekannt
+    // iOS-Hauptversion (z. B. 26). 0 = unbekannt.
+    // WICHTIG: Seit iOS 26 friert Safari "OS x_y" dauerhaft auf 18_6 ein
+    // (Datenschutz). Die echte Version steht nur noch in "Version/26.0".
+    // Daher das Maximum aus beiden Signalen nehmen.
     function iosVersion() {
-        var m = navigator.userAgent.match(/OS (\d+)_/);       // iPhone: "OS 26_0 ..."
-        if (m) return parseInt(m[1], 10);
-        var v = navigator.userAgent.match(/Version\/(\d+)/);  // iPad-Desktop-UA
-        if (v && isIos()) return parseInt(v[1], 10);
-        return 0;
+        var ua = navigator.userAgent;
+        var v = 0;
+        var os = ua.match(/OS (\d+)_/);          // bei iOS 26 eingefroren (18_6)!
+        if (os) v = Math.max(v, parseInt(os[1], 10));
+        var sa = ua.match(/Version\/(\d+)/);     // Safari-Major = echte iOS-Major
+        if (sa) v = Math.max(v, parseInt(sa[1], 10));
+        return v;
     }
 
     async function alreadyInstalled() {
