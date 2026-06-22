@@ -124,7 +124,7 @@ public static class GifMaker
         ctr.Alignment = StringAlignment.Center; ctr.LineAlignment = StringAlignment.Center;
         Font fTitle = new Font("Segoe UI", 24, FontStyle.Bold, GraphicsUnit.Pixel);
         Font fSub = new Font("Segoe UI", 13, FontStyle.Regular, GraphicsUnit.Pixel);
-        g.DrawString("Meine PWA", fTitle, new SolidBrush(white), new RectangleF(0, 30, W, 36), ctr);
+        g.DrawString("Meine App", fTitle, new SolidBrush(white), new RectangleF(0, 30, W, 36), ctr);
         g.DrawString("auf den Startbildschirm legen", fSub, new SolidBrush(white), new RectangleF(0, 74, W, 22), ctr);
 
         // Body hint
