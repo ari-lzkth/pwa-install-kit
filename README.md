@@ -3,7 +3,7 @@
 <p align="center">
   <img src="qr-pwa-install.png" alt="QR-Code zur Installations-Seite" width="240" /><br />
   <sub>📱 Scannen → App installieren<br />
-  <code>https://ari-lzkth.github.io/pwa-install-kit/pwa-install.html</code></sub>
+  <a href="https://ari-lzkth.github.io/pwa-install-kit/pwa-install.html">https://ari-lzkth.github.io/pwa-install-kit/pwa-install.html</a></sub>
 </p>
 
 Eine installierbare **Progressive Web App (PWA)**, die per **QR-Code** verteilt wird:
