@@ -108,6 +108,16 @@
         <li id="d-bip">beforeinstallprompt: …</li>
       </ul>
     </details>
+
+    <!-- Wartungs-Button: Cache/Storage leeren & frisch laden (bei Bedarf entfernen) -->
+    <div style="margin-top:2rem;text-align:center">
+      <button id="resetBtn" type="button"
+        style="padding:.7rem 1.1rem;font-size:.9rem;color:#0d6efd;background:#fff;
+               border:1px solid #cdd9f7;border-radius:10px;cursor:pointer">
+        🗑️ Cache leeren &amp; neu laden
+      </button>
+      <p id="resetMsg" style="font-size:.75rem;color:#888;margin:.6rem 0 0"></p>
+    </div>
   </main>
 
   <script>
@@ -224,6 +234,29 @@
       installBtn.style.display = 'none';
       iosHint.style.display = 'none';
       okNote.style.display = 'block';
+    });
+
+    /* ---------- 6. Hard-Reset: SW abmelden, Caches + Storage leeren, frisch laden ---------- */
+    document.getElementById('resetBtn').addEventListener('click', async () => {
+      const msg = document.getElementById('resetMsg');
+      msg.textContent = 'Wird geleert …';
+      try {
+        if ('serviceWorker' in navigator) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map(r => r.unregister()));
+        }
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(k => caches.delete(k)));
+        }
+        try { localStorage.clear(); } catch (_) {}
+        try { sessionStorage.clear(); } catch (_) {}
+      } catch (e) {
+        msg.textContent = 'Hinweis: ' + e.message;
+      }
+      /* Mit Cache-Busting neu laden, damit auch der HTTP-Cache umgangen wird */
+      const base = location.href.split('#')[0].split('?')[0];
+      location.replace(base + '?frisch=' + Date.now());
     });
   </script>
 </body>
